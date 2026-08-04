@@ -9,7 +9,7 @@ resource "aws_security_group" "web" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]      # SOURCE : de n'importe où (à restreindre en prod)
+    cidr_blocks = ["0.0.0.0/0"] # SOURCE : de n'importe où (à restreindre en prod)
   }
 
   # HTTP (port 80) - le site web
@@ -34,7 +34,7 @@ resource "aws_security_group" "web" {
   egress {
     from_port   = 0
     to_port     = 0
-    protocol    = "-1"               # -1 = tous les protocoles
+    protocol    = "-1" # -1 = tous les protocoles
     cidr_blocks = ["0.0.0.0/0"]
   }
 
