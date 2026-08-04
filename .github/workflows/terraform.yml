@@ -1,6 +1,5 @@
 name: Terraform CI
 
-# Se déclenche à chaque push et pull request
 on:
   push:
     branches: [ main ]
@@ -12,33 +11,27 @@ jobs:
     name: Terraform Check
     runs-on: ubuntu-latest
 
+    # Variables disponibles pour TOUTES les étapes (une seule fois)
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      TF_VAR_ssh_public_key: ${{ secrets.TF_VAR_ssh_public_key }}
+
     steps:
-      # 1. Récupère ton code
       - name: Checkout
         uses: actions/checkout@v4
 
-      # 2. Installe Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
-      # 3. Vérifie le formatage du code
       - name: Terraform Format
         run: terraform fmt -check
 
-      # 4. Initialise (connexion au backend S3)
       - name: Terraform Init
         run: terraform init
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          TF_VAR_ssh_public_key: ${{ secrets.TF_VAR_ssh_public_key }}
-      # 5. Valide la syntaxe
+
       - name: Terraform Validate
         run: terraform validate
 
-      # 6. Prévisualise les changements
       - name: Terraform Plan
-        run: terraform plan
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: terraform plan -input=false
